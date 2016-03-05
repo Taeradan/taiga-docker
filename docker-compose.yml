@@ -1,5 +1,9 @@
 postgres:
     image: postgres
+    environment:
+        - "POSTGRES_USER=taiga"
+        - "POSTGRES_PASSWORD=taiga"
+        - "POSTGRES_DB=taiga"
 
 taigaback:
     image: ipedrazas/taiga-back
