@@ -25,6 +25,8 @@ services:
 
     taiga-back:
         extends: taiga-back-base
+        depends_on:
+            - taiga-init
         volumes:
             - ./taiga-static:/taiga/static
             - ./taiga-media:/taiga/media
@@ -33,7 +35,11 @@ services:
 
     taiga-init:
         extends: taiga-back-base
-        command: "./db_init.sh"
+        depends_on:
+            - postgres
+        volumes:
+            - ./wait-for-it/wait-for-it.sh:/taiga/wait.sh
+        command: "./wait.sh postgres:5432 -- ./db_init.sh"
 
     taiga-demo-data:
         extends: taiga-back-base

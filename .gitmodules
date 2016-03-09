@@ -4,3 +4,6 @@
 [submodule "frontend/taiga-front-dist"]
 	path = frontend/taiga-front-dist
 	url = https://github.com/taigaio/taiga-front-dist.git
+[submodule "wait-for-it"]
+	path = wait-for-it
+	url = https://github.com/vishnubob/wait-for-it.git
