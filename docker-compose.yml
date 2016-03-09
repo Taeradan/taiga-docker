@@ -17,7 +17,7 @@ services:
 
     #### Taiga Backend
     taiga-back-base:
-        build: backend
+        image: taeradan/taiga-backend
         volumes:
             - ./backend/settings.py:/taiga/settings/local.py:ro
         environment:
@@ -47,7 +47,7 @@ services:
 
     #### Taiga Frontend
     taiga-front:
-        build: frontend
+        image: taeradan/taiga-frontend
         environment:
             - "API_NAME:taiga-back"
         volumes:

@@ -1,7 +1,10 @@
 COMPOSE_UP = docker-compose up -d
 
-run: build
+run:
 	$(COMPOSE_UP) taiga-front
+
+run-local: build
+	make run
 
 demo: run
 	$(COMPOSE_UP) taiga-demo
@@ -12,7 +15,8 @@ recreate:
 	make run
 
 build: submodules
-	docker-compose build
+	docker build -t taeradan/taiga-backend backend
+	docker build -t taeradan/taiga-frontend frontend
 
 submodules:
 	git submodule init
