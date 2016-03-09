@@ -2,7 +2,7 @@ FROM nginx
 MAINTAINER Yves Dubromelle "yves+git@dubronetwork.fr"
 
 COPY taiga-front-dist/dist /taiga
-COPY conf.json /taiga/js/conf.json
+COPY conf.json /taiga/conf.json
 COPY run.sh /taiga/run.sh
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY taiga.conf /etc/nginx/conf.d/default.conf
