@@ -34,7 +34,6 @@ WORKDIR /taiga
 RUN pip3 install -r requirements.txt
 
 # Custom files and scripts
-COPY settings.py /taiga/settings/local.py
 COPY db_init.sh /taiga/db_init.sh
 
 # Docker settings

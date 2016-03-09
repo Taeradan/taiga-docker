@@ -2,6 +2,7 @@ version: '2'
 
 services:
 
+    #### PostgreSQL
     postgres:
         image: postgres
         environment:
@@ -9,30 +10,36 @@ services:
             - "POSTGRES_PASSWORD=taiga"
             - "POSTGRES_DB=taiga"
         volumes:
-            - /tmp/taiga_data:/var/lib/postgresql/data
+            - ./taiga-db:/var/lib/postgresql/data
 # Local port for debuging purpose
 #        ports:
 #            - "54321:5432"
 
-    taiga-back:
+    #### Taiga Backend
+    taiga-back-base:
         build: backend
+        volumes:
+            - ./backend/settings.py:/taiga/settings/local.py:ro
         environment:
             - "API_NAME:localhost"
+
+    taiga-back:
+        extends: taiga-back-base
+        volumes:
+            - ./taiga-static:/taiga/static
+            - ./taiga-media:/taiga/media
         ports:
             - "8000:8000"
 
     taiga-init:
-        build: backend
-        environment:
-            - "API_NAME:localhost"
+        extends: taiga-back-base
         command: "./db_init.sh"
 
     taiga-demo-data:
-        build: backend
-        environment:
-            - "API_NAME:localhost"
+        extends: taiga-back-base
         command: "python3 manage.py sample_data"
 
+    #### Taiga Frontend
     taiga-front:
         build: frontend
         environment:
