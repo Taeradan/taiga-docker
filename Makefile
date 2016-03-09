@@ -9,6 +9,9 @@ run: build
 	sleep 5
 	$(COMPOSE_UP) taiga-front
 
+demo: run
+	$(COMPOSE_UP) taiga-demo
+
 recreate:
 	docker-compose kill
 	docker-compose rm -f

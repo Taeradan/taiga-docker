@@ -6,6 +6,3 @@ python3 manage.py loaddata initial_project_templates
 python3 manage.py loaddata initial_role
 python3 manage.py compilemessages
 python3 manage.py collectstatic --noinput
-
-# Sample data, comment this for production
-python3 manage.py sample_data

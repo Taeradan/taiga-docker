@@ -27,6 +27,12 @@ services:
             - "API_NAME:localhost"
         command: "./db_init.sh"
 
+    taiga-demo-data:
+        build: backend
+        environment:
+            - "API_NAME:localhost"
+        command: "python3 manage.py sample_data"
+
     taiga-front:
         build: frontend
         environment:
