@@ -1,33 +1,45 @@
-FROM python:3.4.3-onbuild
-MAINTAINER Ivan Pedrazas "ipedrazas@gmail.com"
+FROM ubuntu:14.04
+MAINTAINER Yves Dubromelle "yves+git@dubronetwork.fr"
 
 ENV DEBIAN_FRONTEND noninteractive
 
-ADD taiga-back /taiga
+# System dependancies
+RUN apt-get update && \
+    apt-get install -y \
+        build-essential binutils-doc autoconf flex bison libjpeg-dev \
+        libfreetype6-dev zlib1g-dev libzmq3-dev libgdbm-dev libncurses-dev \
+        automake libtool libffi-dev curl git tmux gettext locales \
+        python3 python3-pip python-dev python3-dev python-pip \
+        libxml2-dev libxslt-dev libpq-dev
 
-COPY docker-settings.py /taiga/settings/local.py
+# Locale settings
 COPY locale.gen /etc/locale.gen
-
-RUN echo "LANG=en_US.UTF-8" > /etc/default/locale
-RUN echo "LC_TYPE=en_US.UTF-8" > /etc/default/locale
-RUN echo "LC_MESSAGES=POSIX" >> /etc/default/locale
-RUN echo "LANGUAGE=en" >> /etc/default/locale
-
-RUN apt-get update  && apt-get install locales -y
-RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
-
+RUN echo "LANG=en_US.UTF-8" > /etc/default/locale && \
+    echo "LC_TYPE=en_US.UTF-8" > /etc/default/locale && \
+    echo "LC_ALL=en_US.UTF-8" > /etc/default/locale && \
+    echo "LC_MESSAGES=POSIX" >> /etc/default/locale && \
+    echo "LANGUAGE=en" >> /etc/default/locale && \
+    locale-gen "en_US.UTF-8" && \
+    dpkg-reconfigure locales
 ENV LANG en_US.UTF-8
 ENV LC_TYPE en_US.UTF-8
-ENV API_NAME localhost
+ENV LC_ALL en_US.UTF-8
+ENV LANGUAGE en
 
-# RUN (cd /taiga && python manage.py collectstatic --noinput)
-
-VOLUME ["/taiga/static","/taiga/media"]
-
+# Taiga copy
+COPY taiga-back /taiga
 WORKDIR /taiga
 
+# Python dependancies
+RUN pip3 install -r requirements.txt
+
+# Custom files and scripts
+COPY docker-settings.py /taiga/settings/local.py
+COPY db_init.sh /taiga/db_init.sh
+
+# Docker settings
+VOLUME ["/taiga/static","/taiga/media"]
 EXPOSE 8000
 
-RUN locale -a
-
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+# Default command
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
