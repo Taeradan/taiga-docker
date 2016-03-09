@@ -37,6 +37,9 @@ services:
         build: frontend
         environment:
             - "API_NAME:taiga-back"
+        volumes:
+            - ./frontend/nginx-default-vhost.conf:/etc/nginx/conf.d/default.conf:ro
+            - ./frontend/conf.json:/taiga/conf.json:ro
         volumes_from:
             - taiga-back
         ports:
