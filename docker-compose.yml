@@ -1,22 +1,37 @@
-postgres:
-    image: postgres
-    environment:
-        - "POSTGRES_USER=taiga"
-        - "POSTGRES_PASSWORD=taiga"
-        - "POSTGRES_DB=taiga"
+version: '2'
 
-taigaback:
-    image: ipedrazas/taiga-back
-    links:
-        - postgres:postgres
-    ports:
-        - "8000:8000"
+services:
 
-taigafront:
-    image: ipedrazas/taiga-front
-    links:
-        - taigaback:taiga-back
-    ports:
-        - "80:80"
-    environment:
-        - "API_NAME=boot2docker"
+    postgres:
+        image: postgres
+        environment:
+            - "POSTGRES_USER=taiga"
+            - "POSTGRES_PASSWORD=taiga"
+            - "POSTGRES_DB=taiga"
+        volumes:
+            - /tmp/taiga_data:/var/lib/postgresql/data
+# Local port for debuging purpose
+#        ports:
+#            - "54321:5432"
+
+    taiga-back:
+        build: backend
+        environment:
+            - "API_NAME:localhost"
+        ports:
+            - "8000:8000"
+
+    taiga-init:
+        build: backend
+        environment:
+            - "API_NAME:localhost"
+        command: "./db_init.sh"
+
+    taiga-front:
+        build: frontend
+        environment:
+            - "API_NAME:taiga-back"
+        volumes_from:
+            - taiga-back
+        ports:
+            - "80:80"
