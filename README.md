@@ -1,102 +1,84 @@
-[![Stories in Ready](https://badge.waffle.io/ipedrazas/taiga-docker.png?label=ready&title=Ready)](https://waffle.io/ipedrazas/taiga-docker)
 # taiga-docker
 
 Docker scripts to run your own  [Taiga](https://Taiga.io/).
 
+## Requirements
 
-External Dependencies:
+Tools :
 
-   * [PostgreSQL](https://registry.hub.docker.com/_/postgres/)
+* `docker` >= 1.10
+* `docker-compose` >= 1.6
+* `make`
+* `git`
 
-Taiga
+Submodules (automatically pulled by the `make` command)
 
-   * [taiga-back](https://github.com/taigaio/taiga-back): Django backend
-   * [taiga-front](https://github.com/taigaio/taiga-front): Angular.js frontend
+* [taiga-back](https://github.com/taigaio/taiga-back): Django backend
+* [taiga-front](https://github.com/taigaio/taiga-front): Angular.js frontend
+* [wait-for-it](https://github.com/vishnubob/wait-for-it): Script for waiting a service initialisation
 
+## Application quick start
 
-By far the easiest way of setting up Taiga in Docker is by running the `setup.sh` script. So, if you just want to run it and you just don't care about what happens underneath, just run that script.
+### Clone the repository
 
-There's a catch. The API url has to be specified. Taiga frontend is javascript, so, we have to inject the value of the hostname where taiga-back runs. We can do that by defining an environment variable
+```bash
+git clone https://github.com/Taeradan/taiga-docker.git
+```
 
-        export API_NAME=boot2docker
+### Configure your Taiga instance
 
-For example, it will make the requests to `http://boot2docker:8000/api/v1/...` If you don't define this variable the script will assume it's `localhost` (if you're using `boot2docker` it will not work).
+There are some files to modify according to your environment :
 
-If you want to run the frontend manually, this is the command:
+* `frontend/nginx-default-vhost.conf` : In case you split the containers on several machines, replace "taiga-back" by the URL where the backend can be reached.
+* `frontend/conf.json` : *mandatory* - Replace "example.com" with your Taiga instance hostname. To test locally, "localhost" works well here.
+* `backend/settings.py` : *mandatory* - Replace "example.com" with your Taiga instance hostname. To test locally, "localhost" works well here. In this file you can configure the mail notifications and the database settings.
+* `docker-compose.yml` : If you changed the database settings in `backend/settings.py`, double check that the postgres environment variables match. In this file you can also change the data volumes locations on your filesystem.
 
-        docker run -d --name taiga-front -p 80:80 -e API_NAME=$API_NAME --link taiga-back:taiga-back ipedrazas/taiga-front
+### Run your Taiga instance
 
+Only one commande is needed to launch your Taiga instance :
 
-Once you've successfully installed Taiga start a web browser and point it to `http://localhost` or `http://boot2docker`. You should be greeted by a login page. The administrators username is `admin`, and the password is `123123`.
+```bash
+make
+```
 
-If you cannot authenticate, probably is that the API_NAME has not been set properly.
+Once you've successfully installed Taiga start a web browser and point it to `http://your-url`.
+You should be greeted by a login page.
+The administrators username is `admin`, and the password is `123123`.
 
-There is another script `run.sh` that you can use to start your taiga containers once the installation has been succesful. You don't have to run it after the setup, just after stopping the containers.
+## Other actions
 
-### Postgresql
+### Sample data
 
-We run a container based on the original image provided by [PostgreSQL](https://registry.hub.docker.com/_/postgres/)
+In case you want to have some pre-loaded data to familiarize with Taiga, you can run :
 
-    docker run -d --name postgres  postgres
+```bash
+make demo
+```
 
-**Note about Volumes**
+### Purge containers
 
-If you try to mount volumes in OSX using `boot2docker` you will see that it does not work. This is known problem and it only affects OSX. There's a solution though. You might want to extend the postgres docker image and add this line:
+If needed, you can kill, remove, and recreate the containers without losing data (if you have kept the data volumes in `docker-compose.yml`) :
 
-`RUN usermod -u 1000 postgres`
+```bash
+make recreate
+```
 
-This change will fix the permission problem when mounting a volume.
+### Database maintenance
 
-**To initialise the database**
-
-    docker run -it --link postgres:postgres --rm postgres sh -c "su postgres --command 'createuser -h "'$POSTGRES_PORT_5432_TCP_ADDR'" -p "'$POSTGRES_PORT_5432_TCP_PORT'" -d -r -s taiga'"
-
-    docker run -it --link postgres:postgres --rm postgres sh -c "su postgres --command 'createdb -h "'$POSTGRES_PORT_5432_TCP_ADDR'" -p "'$POSTGRES_PORT_5432_TCP_PORT'" -O taiga taiga'";
-
-If you want to access the database, run the following container:
-
-    docker run -it --link postgres:postgres --rm postgres sh -c 'exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres'
+In case you need to acces the database, you can uncomment the port binding in the "postgres" service in `docker-compose.yml` and then runnning `make` to apply the changes.
+You can then access the database locally on the port 54321 with tools such as pgadmin or psql.
 
 Once you are in psql you can check that indeed our user & database have been created:
 
-    # To list the users defined in our system use the following command
-    \du
-    # To list the databases, the command is
-    \list
-
-
-### Taiga-Back
-
-Before running our backend, we have to populate our database, to do so, Taiga provides a regenerate script that creates all the tables and even some testing data
-
-    # pull the image
-    docker pull ipedrazas/taiga-back
-
-    # regenerate tables
-    docker run -it --rm --link postgres:postgres ipedrazas/taiga-back bash regenerate.sh
-
-Once the database has been populated, we can start our Django application:
-
-    docker run -d -p 8000:8000 --name taiga-back --link postgres:postgres ipedrazas/taiga-back
-
-
-### Taiga-Front
-
-
-Finally, we run the frontend
-
-        # pull the image
-        docker pull ipedrazas/taiga-front
-
-        # run the frontend
-        docker run -d -p 80:80 --link taiga-back:taiga-back --volumes-from taiga-back ipedrazas/taiga-front
-
-
-The frontend needs to know the URL of the backend. Those settings are specified in the `frontend/conf.json` file. You can modify them and re-add them into the image by using a volume
-
-        docker run -d -p 80:80 --link taiga-back:taiga-back -v "$(pwd)"/frontend/conf.json:/taiga/js/conf.json:ro ipedrazas/taiga-front
-
+```bash
+psql -h localhost -p 54321 -U taiga
+# To list the users defined in our system use the following command
+> \du
+# To list the databases, the command is
+> \list
+```
 
 ## What's next?
 
-The docker compose file needs some love and care but the next is to add RabbitMQ and the Taiga events plugged in.
+The next is to add RabbitMQ and the Taiga events plugged in.
