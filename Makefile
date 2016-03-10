@@ -21,12 +21,9 @@ build: submodules
 	docker build -t taeradan/taiga-backend backend
 	docker build -t taeradan/taiga-frontend frontend
 
-upgrade-taiga: pull-submodules
+upgrade-taiga: submodules
+	docker-compose pull
 	make recreate
-
-pull-submodules: submodules
-	git submodule foreach git checkout master
-	git submodule foreach git pull
 
 submodules:
 	git submodule init
