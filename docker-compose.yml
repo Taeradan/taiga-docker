@@ -38,7 +38,7 @@ services:
         depends_on:
             - postgres
         volumes:
-            - ./wait-for-it/wait-for-it.sh:/taiga/wait.sh
+            - ./wait-for-it/wait-for-it.sh:/taiga/wait.sh:ro
         command: "./wait.sh postgres:5432 -- ./db_init.sh"
 
     taiga-demo-data:

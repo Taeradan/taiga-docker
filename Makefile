@@ -1,6 +1,6 @@
 COMPOSE_UP = docker-compose up -d
 
-run:
+run: submodules
 	$(COMPOSE_UP) taiga-front
 
 run-local: build
