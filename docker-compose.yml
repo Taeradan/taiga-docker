@@ -48,6 +48,7 @@ services:
     #### Taiga Frontend
     taiga-front:
         image: taeradan/taiga-frontend
+        restart: unless-stopped
         environment:
             - "API_NAME:taiga-back"
         volumes:
