@@ -64,6 +64,22 @@ If needed, you can kill, remove, and recreate the containers without losing data
 make recreate
 ```
 
+### Upgrade Taiga
+
+To use the latest Taiga from upstream, you can use:
+
+```bash
+make upgrade-taiga
+```
+
+### Apply local changes (for developpers)
+
+If you have modified the Dockerfiles, you can apply your changes by running:
+
+```bash
+make build recreate
+```
+
 ### Database maintenance
 
 In case you need to acces the database, you can uncomment the port binding in the "postgres" service in `docker-compose.yml` and then runnning `make` to apply the changes.
