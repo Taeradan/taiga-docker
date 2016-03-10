@@ -12,20 +12,6 @@ RUN apt-get update && \
         python3 python3-pip python-dev python3-dev python-pip \
         libxml2-dev libxslt-dev libpq-dev
 
-# Locale settings
-#COPY locale.gen /etc/locale.gen
-#RUN echo "LANG=en_US.UTF-8" > /etc/default/locale && \
-#    echo "LC_TYPE=en_US.UTF-8" > /etc/default/locale && \
-#    echo "LC_ALL=en_US.UTF-8" > /etc/default/locale && \
-#    echo "LC_MESSAGES=POSIX" >> /etc/default/locale && \
-#    echo "LANGUAGE=en" >> /etc/default/locale && \
-#    locale-gen "en_US.UTF-8" && \
-#    dpkg-reconfigure locales
-#ENV LANG en_US.UTF-8
-#ENV LC_TYPE en_US.UTF-8
-#ENV LC_ALL en_US.UTF-8
-#ENV LANGUAGE en
-
 # Taiga copy
 COPY taiga-back /taiga
 WORKDIR /taiga
