@@ -1,10 +1,10 @@
 from .common import *
 
-MEDIA_URL = "http://example.com/media/"
-STATIC_URL = "http://example.com/static/"
-ADMIN_MEDIA_PREFIX = "http://example.com/static/admin/"
+MEDIA_URL = "http://localhost/media/"
+STATIC_URL = "http://localhost/static/"
+ADMIN_MEDIA_PREFIX = "http://localhost/static/admin/"
 SITES["front"]["scheme"] = "http"
-SITES["front"]["domain"] = "example.com"
+SITES["front"]["domain"] = "localhost"
 
 SECRET_KEY = "theveryultratopsecretkey"
 
@@ -12,7 +12,7 @@ DEBUG = False
 TEMPLATE_DEBUG = False
 PUBLIC_REGISTER_ENABLED = True
 
-DEFAULT_FROM_EMAIL = "no-reply@example.com"
+DEFAULT_FROM_EMAIL = "no-reply@localhost"
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # Uncomment and populate with proper connection parameters

@@ -4,14 +4,14 @@ Docker scripts to run your own  [Taiga](https://Taiga.io/).
 
 ## Requirements
 
-Tools :
+Tools:
 
 * `docker` >= 1.10
 * `docker-compose` >= 1.6
 * `make`
 * `git`
 
-Submodules (automatically pulled by the `make` command)
+Submodules (automatically pulled by the `make` command):
 
 * [taiga-back](https://github.com/taigaio/taiga-back): Django backend
 * [taiga-front](https://github.com/taigaio/taiga-front): Angular.js frontend
@@ -27,16 +27,16 @@ git clone https://github.com/Taeradan/taiga-docker.git
 
 ### Configure your Taiga instance
 
-There are some files to modify according to your environment :
+There are some files to modify according to your environment:
 
 * `frontend/nginx-default-vhost.conf` : In case you split the containers on several machines, replace "taiga-back" by the URL where the backend can be reached.
-* `frontend/conf.json` : *mandatory* - Replace "example.com" with your Taiga instance hostname. To test locally, "localhost" works well here.
-* `backend/settings.py` : *mandatory* - Replace "example.com" with your Taiga instance hostname. To test locally, "localhost" works well here. In this file you can configure the mail notifications and the database settings.
+* `frontend/conf.json` : Replace "localhost" with your Taiga instance hostname if running on a distant server.
+* `backend/settings.py` : Replace "localhost" with your Taiga instance hostname if running on a distant server. In this file you can configure the mail notifications and the database settings.
 * `docker-compose.yml` : If you changed the database settings in `backend/settings.py`, double check that the postgres environment variables match. In this file you can also change the data volumes locations on your filesystem.
 
 ### Run your Taiga instance
 
-Only one commande is needed to launch your Taiga instance :
+Only one commande is needed to launch your Taiga instance:
 
 ```bash
 make
@@ -50,7 +50,7 @@ The administrators username is `admin`, and the password is `123123`.
 
 ### Sample data
 
-In case you want to have some pre-loaded data to familiarize with Taiga, you can run :
+In case you want to have some pre-loaded data to familiarize with Taiga, you can run:
 
 ```bash
 make demo
@@ -58,7 +58,7 @@ make demo
 
 ### Purge containers
 
-If needed, you can kill, remove, and recreate the containers without losing data (if you have kept the data volumes in `docker-compose.yml`) :
+If needed, you can kill, remove, and recreate the containers without losing data (if you have kept the data volumes in `docker-compose.yml`):
 
 ```bash
 make recreate
