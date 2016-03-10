@@ -5,6 +5,7 @@ services:
     #### PostgreSQL
     postgres:
         image: postgres
+        restart: unless-stopped
         environment:
             - "POSTGRES_USER=taiga"
             - "POSTGRES_PASSWORD=taiga"
@@ -25,6 +26,7 @@ services:
 
     taiga-back:
         extends: taiga-back-base
+        restart: unless-stopped
         depends_on:
             - taiga-init
         volumes:

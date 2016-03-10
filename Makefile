@@ -14,6 +14,9 @@ recreate:
 	docker-compose rm -f
 	make run
 
+stop:
+	docker-compose stop
+
 build: submodules
 	docker build -t taeradan/taiga-backend backend
 	docker build -t taeradan/taiga-frontend frontend
