@@ -1,5 +1,5 @@
 {
-    "api": "http://pedro.dubronetwork.fr:8000/api/v1/",
+    "api": "http://example.com:8000/api/v1/",
     "eventsUrl": null,
     "eventsMaxMissedHeartbeats": 5,
     "eventsHeartbeatIntervalTime": 60000,

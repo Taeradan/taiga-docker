@@ -19,7 +19,7 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 # for enable email sending. EMAIL_HOST_USER should end by @domain.tld
 #EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 #EMAIL_USE_TLS = False
-#EMAIL_HOST = "localhost"
+#EMAIL_HOST = ""
 #EMAIL_HOST_USER = ""
 #EMAIL_HOST_PASSWORD = ""
 #EMAIL_PORT = 25
